@@ -1,28 +1,43 @@
+//=============================================================================
+// File: ComWrapper.h - COM object wrapper template class (ala ATL)
+//
+//    Copyright (c) 2017 Jeff Reeder
+//    All Rights Reserved
+//
+// This straightforward template class is used for all COM object pointers used
+// in this software to properly manage the lifetime of all COM objects in such
+// a way that even if an exception happens, they will be auto-released when
+// going out of scope, much like a smart pointer in C++11.  Unfortunately, 
+// smart pointers could not be used because they rely on new/delete, and not on
+// the IUnknown::Release() mechanism.  
+//
+// Using this wrapper object implements the RAII design pattern (Resource 
+// Acquisition Is Initialization)  to cleanly manage COM object lifecycle 
+// management.
+//=============================================================================
+
 #pragma once
 
 
 namespace PhishMe
 {
-   // COM wrapper function (ATL-like) to handle
-   // auto-release of object via RAII design pattern
+   // COM wrapper function (ATL-like) to handle auto-release
+   // of COM object via the RAII design pattern.
    template <class TYPE>
    class ComWrapper
    {
    public:
 
-      typedef TYPE* (*CreatorFunc)();
-
+      // Default blank wrapper object - primarily used in move semantics
       ComWrapper()
-         : _pObject{NULL},
-           _szContext(nullptr)
+         : _pObject{nullptr}
       {}
 
-      ComWrapper( const char* szContext )
-         : _pObject{NULL},                            // Using NULL because that's the COM method
-           _szContext{szContext}
+      // Wrapper with an existing COM object pointer
+      ComWrapper( TYPE* pComType )
+         : _pObject{pComType}
       {
-         if (  szContext == nullptr )   throw runtime_error( "Missing context for ComWrapper::ComWRapper()" );
-         if ( *szContext == '\0'    )   throw runtime_error( "Empty context for ComWrapper::ComWRapper()"   );
+         if ( pComType == nullptr )   throw invalid_argument( FN_MSG( "Invalid COM object pointer" ) );
       }
 
       // Move constructor
@@ -31,19 +46,14 @@ namespace PhishMe
          _Move(wrapper);
       }
 
+      // Destructor makes sure that the attached COM object is released
       virtual ~ComWrapper()
       {
-         if ( _pObject != NULL )   
-         {
-            _pObject->Release();
-            _pObject = NULL;
-         }
-
-         _szContext = nullptr;
+         Release();
       }
 
-      // Move assignment operator
-      ComWrapper& operator=( ComWrapper& wrapper )
+      // Move assignment operator - leaves the input wrapper empty afterward
+      ComWrapper& operator=( ComWrapper&& wrapper )
       {
          _Move(wrapper);
          return *this;
@@ -52,33 +62,39 @@ namespace PhishMe
       // Is the contained object valid?
       bool IsValid() const
       {
-         return _pObject   != NULL     &&
-                _szContext != nullptr  &&
-                *szContext != '\0';
+         return _pObject != nullptr;
       }
 
-      //==[ GETTERS & SETTERS ]================================================
-      TYPE*       GetObj()               { return _pObject;   }           
-      void        SetObj( TYPE* pObj )   { _pObject = pObj; }
+      // Pointer operator - returns COM object pointer as an easy shorthand
+      TYPE* operator->()   { return _pObject; }
 
-      const char* GetContext() const     { return _szContext; }
+      // Get the COM object pointer
+      TYPE* GetObj()   { return _pObject;   }           
 
+      // Expliciitly release the object
+      void Release()   
+      {
+         if ( _pObject != nullptr )
+         {
+            _pObject->Release();
+            _pObject = nullptr;
+         }
+      }
 
 
    protected:
 
-      TYPE*       _pObject;
-      const char* _szContext;
+      TYPE* _pObject;
 
 
    private:
 
+      // Move the contents of one ComWRapper<> to another (for move semantics)
       void _Move( ComWrapper& wrapper )
       {
          if ( &wrapper != this )
          {
             std::swap( _pObject, wrapper._pObject );
-            std::swap( _szContext, wrapper._szContext );
          }
       }
    };

@@ -13,59 +13,54 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\ToTest">
+      <UniqueIdentifier>{10cb060f-2c47-4546-ba36-7848746e24b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ToTest">
+      <UniqueIdentifier>{160799df-7e10-4b0f-9d1e-a722a407f07c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ScheduleTask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="com_exception.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ComWrapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\com_exception.h">
+      <Filter>Header Files\ToTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ComWrapper.h">
+      <Filter>Header Files\ToTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ScheduleTask.h">
+      <Filter>Header Files\ToTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="TaskScheduler.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="App.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="com_exception.cpp">
+    <ClCompile Include="..\com_exception.cpp">
+      <Filter>Source Files\ToTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ScheduleTask.cpp">
+      <Filter>Source Files\ToTest</Filter>
+    </ClCompile>
+    <ClCompile Include="Test_com_exception.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog.cpp">
+    <ClCompile Include="Test_ComWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ScheduleTask.cpp">
+    <ClCompile Include="Test_ScheduleTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
+    <ClCompile Include="..\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".gitignore" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="README.txt" />
   </ItemGroup>
 </Project>

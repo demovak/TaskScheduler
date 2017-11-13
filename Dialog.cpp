@@ -1,3 +1,10 @@
+//=============================================================================
+// File: Dialog.cpp - Class implementation for main application dialog window
+//
+//    Copyright (c) 2017 Jeff Reeder
+//    All Rights Reserved
+//=============================================================================
+
 #include "stdafx.h"
 
 #include "resource.h"
@@ -10,16 +17,12 @@ using namespace std;
 using namespace PhishMe;
 
 
-// Get number of elements in a fixed array
-#define NUM_ELEMENTS(ary)   sizeof( (ary) )  /  sizeof( (ary)[0] )
-
-
 // STATIC: The only way to get the singleton instance of this dialog
 Dialog* Dialog::GetInstance()
 {
    static Dialog* pInstance  =  nullptr;
 
-   if ( pInstance == NULL )
+   if ( pInstance == nullptr )
    {
       // Singleton doesn't exist.  Create it
       pInstance  =  new Dialog();
@@ -45,8 +48,8 @@ INT_PTR Dialog::_OnInitDialog( HWND   hDlg,
 
 INT_PTR Dialog::_Close()
 {
-   DestroyWindow(_hDialog);
-   return TRUE;
+   EndDialog( _hDialog, 0 );
+   return FALSE;
 }
 
 
@@ -76,29 +79,27 @@ void Dialog::_OnAddTask()
    try
    {
       TCHAR szCmdLine[256];
+
       GetWindowText( GetDlgItem( _hDialog, IDC_CMD_LINE ), 
                      szCmdLine,
                      NUM_ELEMENTS(szCmdLine) );
 
-      if ( _tcslen(szCmdLine) == 0 )   throw runtime_error( "Can't add an empty task" );
+      if ( _tcslen(szCmdLine) == 0 )   throw invalid_argument( FN_MSG( "Can't add an empty task" ) );
 
       TCHAR szDelay[256];
       GetWindowText( GetDlgItem( _hDialog, IDC_TIME_DELAY ),
                      szDelay,
                      NUM_ELEMENTS(szDelay) );
 
-      if ( _tcslen(szDelay) == 0 )   throw runtime_error( "Can't add an task without a delay" );
+      if ( _tcslen(szDelay) == 0 )   throw runtime_error( FN_MSG( "Can't add an task without a delay" ) );
 
       // Get our delay as a numeric value
       long lSeconds  =  _ttol(szDelay);
 
-      if ( lSeconds <= 0L )   throw runtime_error( "Task delay cannot be zero or negative" );
+      if ( lSeconds <= 0L )   throw range_error( FN_MSG( "Task delay cannot be zero or negative" ) );
 
       // Try to schedule the task
       _AddScheduledTask( szCmdLine, lSeconds );
-
-      _ErrorMsg( "Task Scheduled", "Operation Complete" );
-
    }
    catch ( exception& ex )
    {
@@ -115,7 +116,11 @@ void Dialog::_AddScheduledTask( LPCTSTR szCmdLine,
    {
       ScheduleTask scheduler;
 
-      scheduler.CreateScheduledTask( szCmdLine, lDelay );
+      scheduler.CreateScheduledTask( _T("PhishMe Task Scheduler Sample"),
+                                     szCmdLine, 
+                                     lDelay );
+
+      _ErrorMsg( "Task Scheduled", "Operation Complete" );
    }
    catch ( exception& ex )
    {
@@ -127,14 +132,19 @@ void Dialog::_AddScheduledTask( LPCTSTR szCmdLine,
 
 // Display a generic error message (non-fatal)
 void Dialog::_ErrorMsg( LPCSTR szText,
-                        LPCSTR szCaption  /* = NULL */ )
+                        LPCSTR szCaption  /* = nullptr */ )
 {
-   MessageBoxA( _hDialog,                             // ANSI on purpose
-                szText,
-                ( szCaption != NULL ) 
-                     ? szCaption
-                     : "Add Task Failure",
-                MB_OK | MB_ICONERROR );
+   tstring sMsg  =  Ansi2T(szText);
+   tstring sCap  =  Ansi2T( ( szCaption != nullptr )
+                                  ? szCaption
+                                  : "Add Task Failure" );
+
+   MessageBox( _hDialog,                             
+               Ansi2T(szText).c_str(),
+               Ansi2T( ( szCaption != nullptr )
+                          ? szCaption
+                          : "Add Task Failure" ).c_str(),
+               MB_OK | MB_ICONERROR );
 }
 
 
@@ -154,10 +164,10 @@ INT_PTR Dialog::_MessageHandler( HWND   hDlg,
       case WM_COMMAND:      return _OnCommand(          wParam, lParam );
       case WM_CLOSE:        return _Close();
 
-      case WM_DESTROY:
+      //case WM_DESTROY:
 
-         PostQuitMessage(0);
-         return TRUE;
+      //   PostQuitMessage(0);
+      //   return TRUE;
    }
 
    return FALSE;

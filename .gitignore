@@ -12,8 +12,12 @@
 
 # Build results
 [Dd]ebug/
+[Dd]ebugA/
+[Dd]ebugU/
 [Dd]ebugPublic/
 [Rr]elease/
+[Rr]eleaseA/
+[Rr]eleaseU/
 [Rr]eleases/
 [Xx]64/
 [Xx]86/

@@ -1,3 +1,13 @@
+//=============================================================================
+// File: Dialog.h - Class definition for main application dialog window
+//
+//    Copyright (c) 2017 Jeff Reeder
+//    All Rights Reserved
+//
+// It should be noted that this is a singleton class, and has the message pump
+// self-contained within the class - keeping a nice clean separation of code.
+//=============================================================================
+
 #pragma once
 
 namespace PhishMe
@@ -52,7 +62,7 @@ namespace PhishMe
 
       // Display a generic error message (non-fatal)
       void _ErrorMsg( LPCSTR szText,
-                      LPCSTR szCaption  =  NULL );
+                      LPCSTR szCaption  =  nullptr );
    };
 }
 

@@ -1,5 +1,5 @@
 //=============================================================================
-// File: stdafx.h - Precompiled header file for the application
+// File: stdafx.h - Precompiled header file for the unit tests
 //
 //    Copyright (c) 2017 Jeff Reeder
 //    All Rights Reserved
@@ -26,5 +26,11 @@
 #include <string>
 #include <exception>
 
+
+// Headers for CppUnitTest
+#include "CppUnitTest.h"
+
 // MBCS <-> Unicode conversion - extracted from ATL
-#include "Utils.h"                        // Generic utilities
+#include "../Utils.h"                     // Generic utilities
+
+#include "targetver.h"

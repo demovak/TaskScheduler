@@ -1,30 +1,23 @@
-//-------------------------------------------
-// This is a raw Win32 "dialog-based" UI app.
-// It doesn't use MFC, ATL or anything fancy.
-//-------------------------------------------
+//=============================================================================
+// File: App.cpp - Main application entry point
+//
+//    Copyright (c) 2017 Jeff Reeder
+//    All Rights Reserved
+//
+// This is a raw Win32 "dialog-based" UI app.  It doesn't use MFC, ATL or 
+// anything fancy.
+//=============================================================================
 
 #include "stdafx.h"
 
 #include "resource.h"
-#include "Dialog.h"                    // Dialog class
 #include "com_exception.h"
 
-// Import the COM objects we'll need
-#pragma comment( lib, "taskschd.lib" )
-#pragma comment( lib, "comsupp.lib"  )
-#pragma comment( lib, "credui.lib"   )
+#include "Dialog.h"                    // Dialog class
 
 
 using namespace std;
 using namespace PhishMe;
-
-
-enum ResultCode
-{
-   resultNormal = 0,
-   resultGenericError,
-   resultComError
-};
 
 
 //--------------------------------------------------------------------------
@@ -33,76 +26,57 @@ enum ResultCode
 // NOTE: This is the only symbol in our code that exists in the global scope
 //--------------------------------------------------------------------------
 
-int __stdcall _tWinMain( HINSTANCE hInst, 
-                         HINSTANCE h0, 
-                         LPTSTR    lpCmdLine, 
-                         int       nCmdShow )
+int WINAPI _tWinMain( HINSTANCE hInst, 
+                      HINSTANCE hPrevInstance, 
+                      LPTSTR    lpCmdLine, 
+                      int       nCmdShow )
 {
    bool bComInitialized  =  false;
-   HWND hDlg             =  NULL;
-   int  nReturnCode      =  resultNormal;
+   HWND hDlg             =  nullptr;
 
    try
    {
       // Initialize COM as multi-threaded apartment
-      HRESULT hr  =  CoInitializeEx( NULL, COINIT_MULTITHREADED );
+      HRESULT hr  =  CoInitializeEx( nullptr, COINIT_MULTITHREADED );
 
-      if ( FAILED(hr) )   throw com_exception( "Can't initialize COM" );
+      if ( FAILED(hr) )   throw com_exception( FN_MSG( "Can't initialize COM" ),  hr );
 
       // Set general COM security levels.
-      hr  =  CoInitializeSecurity( NULL,                             // Default security descriptor
+      hr  =  CoInitializeSecurity( nullptr,                          // Default security descriptor
                                    -1,                               // Choose authentication services
-                                   NULL,                             // Choose security providers
-                                   NULL,                             // Reserved
+                                   nullptr,                          // Choose security providers
+                                   nullptr,                          // Reserved
                                    RPC_C_AUTHN_LEVEL_PKT_PRIVACY,    // Authentication type
                                    RPC_C_IMP_LEVEL_IMPERSONATE,      // Impersonate level
-                                   NULL,                             // No authorization list
+                                   nullptr,                          // No authorization list
                                    0,                                // No additional capabilities
-                                   NULL );                           // Reserved
+                                   nullptr );                        // Reserved
 
-      if ( FAILED(hr) )   throw com_exception( "Can't initialize COM Security", hr );
+      if ( FAILED(hr) )   throw com_exception( FN_MSG( "Can't initialize COM Security" ),  hr );
+
+      bComInitialized = true;
 
       //--( Application Code )----------------------------------------------------
-      Dialog* pDlg = Dialog::GetInstance();
+      Dialog* pDlg  =  Dialog::GetInstance();
 
-      // Fire up our Dialog, while using our Dialog class for all the heavy lifting
-      HWND hDlg = CreateDialogParam( hInst,
-                                     MAKEINTRESOURCE( IDD_DIALOG1 ),
-                                     0,
-                                     &pDlg->DialogProc,
-                                     0 );
-      ShowWindow( hDlg, nCmdShow );
-
-      // Handle the boilerplate application message pump
-      BOOL nMsgResult;
-      MSG  msg;
-
-      while ( ( nMsgResult  =  GetMessage( &msg, 0, 0, 0 ) )  !=  0 )
-      {
-         if ( nMsgResult == -1 )   throw exception( "GetMessage() failed" );
-
-         if ( !IsDialogMessage( hDlg, &msg ) )
-         {
-            TranslateMessage( &msg );           // Translate virtual-key messages
-            DispatchMessage(  &msg );            // Send it to dialog procedure
-         }
-      }
+      DialogBox( hInst, 
+                 MAKEINTRESOURCE(IDD_DIALOG1), 
+                 NULL, 
+                 & pDlg->DialogProc );
    }
    catch ( com_exception& ex )
    {
-      nReturnCode = resultComError;
-      MessageBoxA( hDlg,                        // Use ANSI version deliberately
-                   ex.what(),
-                   "COM Error",
-                   MB_OK | MB_ICONERROR );
+      MessageBox( hDlg,                        // Use ANSI version deliberately
+                  Ansi2T( ex.what() ).c_str(),
+                  _T("COM Error"),
+                  MB_OK | MB_ICONERROR );
    }
    catch ( exception& ex )
    {
-      nReturnCode = resultGenericError;
-      MessageBoxA( hDlg,                        // Use ANSI version deliberately
-                   ex.what(),
-                   "Application Error",
-                   MB_OK | MB_ICONERROR );
+      MessageBox( hDlg,                        // Use ANSI version deliberately
+                  Ansi2T( ex.what() ).c_str(),
+                  _T("Application Error"),
+                  MB_OK | MB_ICONERROR );
    }
 
    if ( bComInitialized )
@@ -111,5 +85,5 @@ int __stdcall _tWinMain( HINSTANCE hInst,
       CoUninitialize();
    }
 
-   return nReturnCode;
+   return 0;
 }
