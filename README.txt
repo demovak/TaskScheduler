@@ -1,11 +1,15 @@
-===============================================================================
-               Windows Task Scheduler Sample App in C++
+Windows Task Scheduler Sample App in C++ [Nov 12, 2017]
 
-                   Copyright (c) 2017  Jeff Reeder
-                         All Rights Reserved
+Copyright (c) 2017  Jeff Reeder
+All Rights Reserved
 
-                    Date of release: Nov 12, 2017
-===============================================================================
+
+*******************************************************************************
+*** NOTE: When bringing this solution up for the first itme, make sure      ***
+***       that Visual Studio is set to build x86 architecture, and that     ***
+***       in Build | Configuration Manager that the selected configuration  ***
+***       is configured to "Build".                                         ***
+*******************************************************************************
 
 This source demonstrates how to use DCOM from a C++ / Win32 application to
 add an executable task to the Windows Task Scheduler that will be run after
