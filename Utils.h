@@ -75,11 +75,7 @@ namespace PhishMe
    // Format an exception message with the function signature as an ANSI string (returns wide string)
    #define EX_FN_MSG_W( ex, msg )   ( A2Wide( EX_FN_MSG_A( (ex), (msg) ) ).c_str() )
 
-   //#ifdef _UNICODE
-   //  #define EX_FN_MSG( ex, msg )   EX_FN_MSG_W( (ex), (msg) )
-   //#else
-     #define EX_FN_MSG( ex, msg )   EX_FN_MSG_W( (ex), (msg) )
-   //#endif
+   #define EX_FN_MSG( ex, msg )   EX_FN_MSG_W( (ex), (msg) )
 
    // A simple macro to return a string with the function signature, 
    // a ": " and a text message.  This is quite useful for detailed 
