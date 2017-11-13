@@ -26,7 +26,7 @@ string PhishMe::WideToAnsi( const wstring sWide )
                         sWide.c_str(), 
                         -1, 
                         szBuf, 
-                        nLen, 
+                        static_cast<int>(nLen), 
                         NULL, 
                         NULL );
 
@@ -51,7 +51,7 @@ wstring PhishMe::AnsiToWide( const string sAnsi )
                         sAnsi.c_str(), 
                         -1, 
                         szBuf, 
-                        nLen );
+                        static_cast<int>(nLen) );
 
     wstring sWide(szBuf);
 

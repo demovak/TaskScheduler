@@ -120,7 +120,10 @@ void Dialog::_AddScheduledTask( LPCTSTR szCmdLine,
                                      szCmdLine, 
                                      lDelay );
 
-      _ErrorMsg( "Task Scheduled", "Operation Complete" );
+      MessageBox( _hDialog,
+                  _T("The task has been scheduled successfully"),
+                  _T("Operation Complete" ),
+                  MB_OK );
    }
    catch ( exception& ex )
    {
